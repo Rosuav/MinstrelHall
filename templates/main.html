@@ -14,7 +14,6 @@ In Minstrel Hall, a number of ongoing campaigns take place. Most of them follow 
 <tr><th>Campaign name</th><th>DM name</th><th>Room</th><th>Looking?</th><th>Playing times (UTC)</th></tr>
 {% for cp in campaigns %}
     <tr><td><a href="campaign.php?id={{cp[0]}}">{{cp[1]}}</a></td><td>{{cp[2]}}</td><td>{{cp[3]}}</td><td>{{cp[4]}}</td><td>{{cp[5]}}</td></tr>
-}
 {% endfor %}
 </table>
 <p>For further information about a campaign, click on its name, or inquire in-game.</p>
