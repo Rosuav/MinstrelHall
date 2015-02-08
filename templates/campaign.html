@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Minstrel Hall - Campaign {{cp[0]}} details</h1>
+<h2>{{cp[1]}}</h2>
+<p>
+DM: {{cp[2]}}<br>
+Room: {{cp[3]}}<br>
+{{cp[4]}} for players.<br>
+Normal playing times; {{cp[5]}}<br>
+</p>
+{{cp[6]}}
+</table>
+<p>For further information, contact the DM in-game.</p>
+{% endblock %}
