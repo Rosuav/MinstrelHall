@@ -24,7 +24,7 @@ def campaign(id):
 	db = get_db()
 	cur = db.cursor()
 	cur.execute("select id,name,dm,room,looking,playingtime,description from campaigns where id=%s", (id,))
-	cp = cur.fetchone()
+	cp = list(cur.fetchone())
 	if not cp: return Response('Campaign not found', 404)
 	cp[4]="Looking" if cp[4] else "Not currently looking"
 	db.commit()
