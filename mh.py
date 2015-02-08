@@ -15,7 +15,6 @@ def mainpage():
 	cur = db.cursor()
 	cur.execute("select id,name,dm,room,looking,playingtime from campaigns where room!='dead'")
 	campaigns = cur.fetchall()
-	for cp in campaigns: cp[4]="Yes" if cp[4] else "No"
 	db.commit()
 	return render_template("main.html", campaigns=campaigns)
 
@@ -24,9 +23,8 @@ def campaign(id):
 	db = get_db()
 	cur = db.cursor()
 	cur.execute("select id,name,dm,room,looking,playingtime,description from campaigns where id=%s", (id,))
-	cp = list(cur.fetchone())
+	cp = cur.fetchone()
 	if not cp: return Response('Campaign not found', 404)
-	cp[4]="Looking" if cp[4] else "Not currently looking"
 	db.commit()
 	return render_template("campaign.html", cp=cp)
 

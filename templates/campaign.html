@@ -5,7 +5,11 @@
 <p>
 DM: {{cp[2]}}<br>
 Room: {{cp[3]}}<br>
-{{cp[4]}} for players.<br>
+{% if cp[4] %}
+Looking for players.<br>
+{% else %}
+Not currently looking for players.<br>
+{% endif %}
 Normal playing times; {{cp[5]}}<br>
 </p>
 {{cp[6]}}
