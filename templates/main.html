@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+<h1>Minstrel Hall</h1>
+<p>
+Welcome to Minstrel Hall! We have an extensive virtual gaming shop, where you can play a variety of games including Dungeons and Dragons, chess, and in fact anything you can think of!
+</p><p>
+To join in the fun, you will need a MUD client (also called a Telnet client). Recommended clients include <a href="http://www.kepl.com.au/esstu/rosmud.html">RosMud</a> (easiest and quickest if you're on Windows), <a href="http://tinyfugue.sourceforge.net">TinyFugue</a>, <a href="http://www.gammon.com.au/mushclient/mushclient.htm">mushclient</a>, and in fact just about anything you care to use. Connect to <a href="telnet://minstrelhall.com:221">minstrelhall.com port 221</a>. If you wish to play from your browser, you can use <a href="http://www.mudconnect.com/fmud/?host=minstrelhall.com&port=221">The Mud Connector's client</a>, but this lacks many features such as color.
+</p><p>
+Don't worry too much about a character name; you can always change it later. Use whatever you want as a login (as long as it's not openly offensive), and your DM will help you with the rest.
+</p><p>
+In Minstrel Hall, a number of ongoing campaigns take place. Most of them follow some edition of the official Dungeons and Dragons Player's Handbook, but this is entirely up to the campaigns' DMs - almost any dice-based system can be accomodated. All campaigns are free to play, but you will find it helpful to have a copy of the appropriate Player's Handbook.
+</p>
+<table border="1" class="sortable" id="content">
+<tr><th>Campaign name</th><th>DM name</th><th>Room</th><th>Looking?</th><th>Playing times (UTC)</th></tr>
+{% for cp in campaigns %}
+    <tr><td><a href="campaign.php?id={{cp[0]}}">{{cp[1]}}</a></td><td>{{cp[2]}}</td><td>{{cp[3]}}</td><td>{{cp[4]}}</td><td>{{cp[5]}}</td></tr>
+}
+{% endfor %}
+</table>
+<p>For further information about a campaign, click on its name, or inquire in-game.</p>
+<p>Server admin: Chris Angelico, contactable in-game as Rosuav, or by email, dmr at minstrelhall dot com.</p>
+{% endblock %}
