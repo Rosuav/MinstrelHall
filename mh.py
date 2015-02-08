@@ -1,7 +1,12 @@
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, Markup
+from markdown import markdown
 import psycopg2
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
+
+@app.template_filter("markdown")
+def markupdown(text):
+	return Markup(markdown(text))
 
 def get_db():
 	if not hasattr(g, 'pgsql'):
