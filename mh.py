@@ -1,5 +1,5 @@
 from flask import Flask, render_template, g, Markup
-import markdown as md
+import mistune as md
 import psycopg2
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
