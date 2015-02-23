@@ -4,8 +4,8 @@ import psycopg2
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
 
-@app.template_filter("markdown")
-def markupdown(text):
+@app.template_filter()
+def markdown(text):
 	return Markup(markdown(text))
 
 def get_db():
