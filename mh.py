@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.template_filter()
 def markdown(text):
-	return Markup(markdown(text))
+	return Markup(markdown(text,escape=True))
 
 def get_db():
 	if not hasattr(g, 'pgsql'):
