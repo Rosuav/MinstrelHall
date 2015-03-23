@@ -65,7 +65,7 @@ def membership_setup():
 		for email in emails:
 			hash = os.urandom(8).encode('hex')
 			cur.execute("insert into membership values (%s, %s)", (email, hash))
-			s.sendmail("no-reply@gilbertandsullivan.org.au",["rosuav@gmail.com"],"""Content-Type: text/plain; charset="us-ascii"
+			s.sendmail("no-reply@gilbertandsullivan.org.au",[email],"""Content-Type: text/plain; charset="us-ascii"
 From: no-reply@gilbertandsullivan.org.au
 To: %s
 Subject: Membership database access
