@@ -48,7 +48,7 @@ def membership(hash):
 		# Not found - wrong hash, or no longer subscribed
 		return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
 	# PyDrive isn't set up in the system Python, so we explicitly invoke a different Python to do the work for us.
-	p = subprocess.Popen(["/usr/local/bin/python2.7","/home/gideon/MembershipAccess/membaccess.py","html"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	p = subprocess.Popen(["/usr/local/bin/python2.7","membaccess.py","html"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd="/home/gideon/MembershipAccess")
 	return p.communicate()[0] # TODO: Make sure this can't block
 
 @app.route("/memb")
