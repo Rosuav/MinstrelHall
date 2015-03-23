@@ -1,6 +1,7 @@
 from flask import Flask, render_template, g, Markup
 import mistune as md
 import psycopg2
+import subprocess
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
 
@@ -32,6 +33,15 @@ def campaign(id):
 	if not cp: return Response('Campaign not found', 404)
 	db.commit()
 	return render_template("campaign.html", cp=cp)
+
+@app.route("/memb/<hash>")
+def membership(hash):
+	# TODO: Verify the hash against an email address and check it's still subscribed.
+	if False:
+		return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
+	# PyDrive isn't set up in the system Python, so we explicitly invoke a different Python to do the work for us.
+	p = subprocess.Popen(["/usr/local/bin/python2.7","/home/gideon/MembershipAccess/membaccess.py","html"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	return p.communicate()[0] # TODO: Make sure this can't block
 
 if __name__ == "__main__":
 	import logging
