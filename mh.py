@@ -7,6 +7,14 @@ import smtplib
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
 
+# Enable Unicode return values for all database queries
+# This would be the default in Python 3, but in Python 2, we
+# need to enable these two extensions.
+# http://initd.org/psycopg/docs/usage.html#unicode-handling
+import psycopg2.extensions
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
+
 @app.template_filter()
 def markdown(text):
 	return Markup(md.markdown(text,escape=True))
