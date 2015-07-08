@@ -66,8 +66,11 @@ def membership_setup():
 	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
 	cur = db.cursor()
 	cur.execute("select email from membership")
-	for email in cur: emails.remove(email[0])
-	emails.remove("")
+	for email in cur:
+		try: emails.remove(email[0])
+		except ValueError: pass
+	try: emails.remove("")
+	except ValueError: pass
 	if emails:
 		s=smtplib.SMTP("localhost")
 		for email in emails:
