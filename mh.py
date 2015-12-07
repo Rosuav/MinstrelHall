@@ -40,8 +40,8 @@ def campaign(id):
 	cur = db.cursor()
 	cur.execute("select id,name,dm,room,looking,playingtime,description from campaigns where id=%s", (id,))
 	cp = cur.fetchone()
-	if not cp: return Response('Campaign not found', 404)
 	db.commit()
+	if not cp: return Response('Campaign not found', 404)
 	return render_template("campaign.html", cp=cp)
 
 @app.route("/memb/<hash>")
