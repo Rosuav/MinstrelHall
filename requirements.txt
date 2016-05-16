@@ -1,3 +1,6 @@
 flask
 psycopg2
 mistune
+flask
+mistune
+psycopg2
