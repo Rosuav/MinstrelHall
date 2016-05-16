@@ -49,6 +49,8 @@ def campaign(id):
 
 @app.route("/memb/<hash>")
 def membership(hash):
+	if not request.is_secure:
+		return redirect("https://gideon.rosuav.com/memb/"+hash)
 	db = get_db()
 	cur = db.cursor()
 	cur.execute("select email from membership where hash=%s", (hash,))
@@ -65,6 +67,8 @@ def membership(hash):
 
 @app.route("/memb")
 def membership_setup():
+	if not request.is_secure:
+		return redirect("https://gideon.rosuav.com/memb")
 	db = get_db()
 	# create table membership (email varchar primary key,hash varchar not null unique);
 	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
