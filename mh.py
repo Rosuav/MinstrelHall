@@ -66,9 +66,10 @@ def membership(hash):
 	return p.communicate()[0] # TODO: Make sure this can't block
 
 @app.route("/memb")
+@app.route("/committee")
 def membership_setup():
 	if not request.is_secure:
-		return redirect("https://gideon.rosuav.com/memb")
+		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
 	# create table membership (email varchar primary key,hash varchar not null unique);
 	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
