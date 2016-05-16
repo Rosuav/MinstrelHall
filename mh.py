@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, Markup
+from flask import Flask, render_template, g, Markup, request, redirect
 import mistune as md
 import psycopg2
 import subprocess
@@ -87,10 +87,11 @@ def membership_setup():
 			s.sendmail("no-reply@gilbertandsullivan.org.au",[email],"""Content-Type: text/plain; charset="us-ascii"
 From: no-reply@gilbertandsullivan.org.au
 To: %s
-Subject: Membership database access
+Subject: Committee information access
 
-Access to the G&S Society membership database is by personalized links.
-Your link is: http://i.rosuav.com/memb/%s
+Access to the G&S Society membership database and committee data is by
+personalized links. Your link is:
+https://gideon.rosuav.com/committee/%s
 Please retain this email for your records.
 
 Thanks!
@@ -102,6 +103,25 @@ Domainmaster, gilbertandsullivan.org.au
 		return "Sent emails to:<ul><li>"+"<li>".join(emails)+"</ul>"
 	db.commit()
 	return "No new emails to send."
+
+@app.route("/committee/<hash>")
+def committee_info(hash):
+	# TODO: Dedup.
+	if not request.is_secure:
+		return redirect("https://gideon.rosuav.com/committee/"+hash)
+	db = get_db()
+	cur = db.cursor()
+	cur.execute("select email from membership where hash=%s", (hash,))
+	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
+	for row in cur:
+		if row[0] in emails: break
+	else:
+		# Not found - wrong hash, or no longer subscribed
+		return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
+	cur.execute("select gdrivepwd from committee")
+	passwd = cur.fetchall()[0][0]
+	db.commit()
+	return render_template("committee.html", passwd=passwd, hash=hash)
 
 if __name__ == "__main__":
 	import logging
