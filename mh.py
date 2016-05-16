@@ -7,6 +7,9 @@ import smtplib
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
 
+# TODO: Port to Python 3, the latest psycopg2, and the like. Then take
+# advantage of context managers, merge in the membershipaccess script, etc.
+
 # Enable Unicode return values for all database queries
 # This would be the default in Python 3, but in Python 2, we
 # need to enable these two extensions.
