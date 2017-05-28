@@ -40,7 +40,7 @@ def log_to_tmp(f):
 		try:
 			return f(*a, **kw)
 		except Exception as e:
-			with open("/tmp/exception.log", "a") as f:
+			with open("/tmp/mh-exception.log", "a") as f:
 				print("----------------------", file=f)
 				print(time.ctime(), file=f)
 				print(sys.version, file=f)
