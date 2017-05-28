@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import smtplib
+import binascii
 import functools
 import traceback
 import config # Local config variables and passwords, not in source control
@@ -109,7 +110,8 @@ def membership_setup():
 	if emails:
 		s=smtplib.SMTP("localhost")
 		for email in emails:
-			hash = os.urandom(8).encode('hex')
+			hash = binascii.hexlify(os.urandom(8))
+			if bytes is not str: hash = hash.decode("ascii")
 			cur.execute("insert into membership values (%s, %s)", (email, hash))
 			s.sendmail("no-reply@gilbertandsullivan.org.au",[email],"""Content-Type: text/plain; charset="us-ascii"
 From: no-reply@gilbertandsullivan.org.au
