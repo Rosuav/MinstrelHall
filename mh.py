@@ -1,9 +1,14 @@
+from __future__ import print_function
 from flask import Flask, render_template, g, Markup, request, redirect
 import mistune as md
 import psycopg2
 import subprocess
 import os
+import sys
+import time
 import smtplib
+import functools
+import traceback
 import config # Local config variables and passwords, not in source control
 app = Flask(__name__)
 
@@ -27,6 +32,22 @@ def get_db():
 		# Pull in the actual connection string from a non-git-managed file
 		g.pgsql = psycopg2.connect(config.db_connection_string)
 	return g.pgsql
+
+def log_to_tmp(f):
+	"""As well as regular exception processing, log them to /tmp"""
+	@functools.wraps(f)
+	def wrapper(*a, **kw):
+		try:
+			return f(*a, **kw)
+		except Exception as e:
+			with open("/tmp/exception.log", "a") as f:
+				print("----------------------", file=f)
+				print(time.ctime(), file=f)
+				print(sys.version, file=f)
+				traceback.print_exc(file=f)
+				print("----------------------", file=f)
+			raise
+	return wrapper
 
 @app.route("/")
 def mainpage():
@@ -67,6 +88,7 @@ def membership(hash):
 
 @app.route("/memb")
 @app.route("/committee")
+@log_to_tmp
 def membership_setup():
 	if not request.is_secure:
 		return redirect("https://gideon.rosuav.com/committee")
