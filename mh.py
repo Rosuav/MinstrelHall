@@ -14,6 +14,8 @@ app = Flask(__name__)
 
 # TODO: Port to Python 3, the latest psycopg2, and the like. Then take
 # advantage of context managers, merge in the membershipaccess script, etc.
+# (The psycopg2 previously in use didn't support context managers. No, I was
+# NOT running this on Python 2.4!)
 
 # Enable Unicode return values for all database queries
 # This would be the default in Python 3, but in Python 2, we
