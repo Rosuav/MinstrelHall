@@ -95,7 +95,9 @@ def membership_setup():
 	if not request.is_secure:
 		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
-	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
+	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
+	if bytes is not str: emails = emails.decode("ascii") # Py2/Py3 compat
+	emails = emails.split("\n")
 	cur = db.cursor()
 	cur.execute("create table if not exists membership (email varchar primary key,hash varchar not null unique)")
 	cur.execute("select email from membership")
