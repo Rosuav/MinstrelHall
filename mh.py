@@ -35,12 +35,12 @@ def get_db():
 		g.pgsql = psycopg2.connect(config.db_connection_string)
 	return g.pgsql
 
-def log_to_tmp(f):
+def log_to_tmp(func):
 	"""As well as regular exception processing, log them to /tmp"""
-	@functools.wraps(f)
+	@functools.wraps(func)
 	def wrapper(*a, **kw):
 		try:
-			return f(*a, **kw)
+			return func(*a, **kw)
 		except Exception as e:
 			with open("/tmp/mh-exception.log", "a") as f:
 				print("----------------------", file=f)
