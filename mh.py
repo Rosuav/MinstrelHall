@@ -134,6 +134,7 @@ Domainmaster, gilbertandsullivan.org.au
 	return "No new emails to send."
 
 @app.route("/committee/<hash>")
+@log_to_tmp
 def committee_info(hash):
 	# TODO: Dedup.
 	if not request.is_secure:
