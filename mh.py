@@ -142,7 +142,9 @@ def committee_info(hash):
 	db = get_db()
 	cur = db.cursor()
 	cur.execute("select email from membership where hash=%s", (hash,))
-	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
+	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
+	if bytes is not str: emails = emails.decode("ascii") # Py2/Py3 compat
+	emails = emails.split("\n")
 	for row in cur:
 		if row[0] in emails: break
 	else:
