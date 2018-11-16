@@ -166,6 +166,7 @@ def bingo(channel):
 	# TODO: Network the cards, so you type in your name and see the same card
 	# Have the card live-update if you have it open in two places
 	# Have a hot-link to view only, eg "#yourname", for stream
+	# TODO: Use markdown instead of safe
 	data = datasets.BINGO.get(channel.lower())
 	if not data:
 		return "Channel name not recognized - check the link", 404
