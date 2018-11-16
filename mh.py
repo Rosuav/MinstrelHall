@@ -157,16 +157,27 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
+bingo_status = {None: 0}
 @app.route("/bingo/<channel>")
 @log_to_tmp
 def bingo(channel):
 	data = datasets.BINGO.get(channel.lower())
 	if not data:
 		return "Channel name not recognized - check the link", 404
-	# TODO: Record the user's name for stability
-	cards = list(enumerate(data["cards"], 1))
-	random.shuffle(cards)
-	cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
+	# Prune the bingo status dict if it's past noon in UTC
+	# Yeah that's an odd boundary to use. Got a better one?
+	today = (int(time.time()) - 86400//2) // 86400
+	if bingo_status[None] != today:
+		bingo_status.clear()
+		bingo_status[None] = today
+	user = request.args.get("user")
+	if user and user in bingo_status:
+		cards = bingo_status[user]
+	else:
+		cards = list(enumerate(data["cards"], 1))
+		random.shuffle(cards)
+		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
+		if user: bingo_status[user] = cards
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html", cards=cards)
