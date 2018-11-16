@@ -180,7 +180,7 @@ def bingo(channel):
 		if user: bingo_status[user] = cards
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
-	return render_template("bingo.html", cards=cards)
+	return render_template("bingo.html", cards=cards, include_login=not user)
 
 if __name__ == "__main__":
 	import logging
