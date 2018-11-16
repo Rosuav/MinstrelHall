@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Twitch Bingo</title>
+<style>
+td {
+	width: 7em;
+	height: 7em;
+	text-align: center;
+}
+td.marked {
+	background: #a0f0c0;
+}
+</style>
+</head>
+<body>
+<h1>Twitch Bingo</h1>
+<p>
+Spot things as they happen during a <a href="https://twitch.tv/devicat">DeviCat live stream</a> and see if you can claim
+an entire row or column in a single stream!
+</p>
+<table border>
+<tr>
+<td>Line-art colour change<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291593/1.0" title="devicatMAGIC"></td>
+<td>CCB is brutally sassy<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291599/1.0" title="devicatCCB"></td>
+<td>12+ month resub<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1239958/1.0" title="ladydr1HoG"></td>
+<td>Devi makes a box<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1112114/1.0" title="devicatGIFT"></td>
+<td>We raid someone new<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/864205/1.0" title="TombRaid"></td>
+</tr><tr>
+<td>Something happens on the wrong layer<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291582/1.0" title="devicatGRR"></td>
+<td>Raptor sighting<br><img src="https://cdn.betterttv.net/emote/55b947aa8bc2bcfa0d99f669/1x" title="scudDance"></td>
+<td>Devi talks like a psycho<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291575/1.0" title="devicatEH"></td>
+<td>Everyone squees over something cute<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291588/1.0" title="devicatAWW"></td>
+<td>A pet visits or scratches at the door<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1293024/1.0" title="devicatCHII">
+    <img src="https://static-cdn.jtvnw.net/emoticons/v1/1293025/1.0" title="devicatSMUG"></td>
+</tr><tr>
+<td>Perfect bake-off<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1293021/1.0" title="devicatCAKE"></td>
+<td>Devi surprises herself with a visual effect<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291574/1.0" title="devicatSPOOK"></td>
+<td data-freebie=1><b>FREE</b><br>Someone is a <img src="https://static-cdn.jtvnw.net/emoticons/v1/1293027/1.0" title="devicatBUTT"><br><b>FREE</b></td>
+<td>PhotoShop asks for more RAM<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1038847/1.0" title="noobsSheep"></td>
+<td>One person takes three Gratitude Board spots<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291596/1.0" title="devicatGLO">
+    <img src="https://static-cdn.jtvnw.net/emoticons/v1/1291592/1.0" title="devicatLOVE">
+    <img src="https://static-cdn.jtvnw.net/emoticons/v1/1291597/1.0" title="devicatGLO2"></td>
+</tr><tr>
+<td>Devi offers streaming or arting tips<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1112113/1.0" title="devicatSALUT"></td>
+<td>Blacksouls fills the chat<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291594/1.0" title="devicatHYPU"></td>
+<td>Tinzien donates using a hilarious name<br><img src="https://cdn.betterttv.net/frankerfacez_emote/172957/1" title="deviDO"></td>
+<td>A beloved community member raids us<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/62836/1.0" title="twitchRaid"></td>
+<td>Ironmania becomes streamboss<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/822112/1.0" title="FortOne"></td>
+</tr><tr>
+<td>HatAndSandals lurks<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291569/1.0" title="devicatLURK"></td>
+<td>The cup gets splooshed<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1293020/1.0" title="devicatPOW"></td>
+<td>Devi double-checks the dashboard<br><img src="https://cdn.betterttv.net/frankerfacez_emote/251430/1" title="deviCoolStory"></td>
+<td>Someone creates fanart of Devi or a character<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291601/1.0" title="devicatTYVM"></td>
+<td>Devi brings a hot drink back from break<br><img src="https://static-cdn.jtvnw.net/emoticons/v1/1291602/1.0" title="devicatCUP"></td>
+</tr>
+</table>
+
+<p><small>Just for fun.</small></p>
+<script>
+/* Plans:
+1) Make the cells clickable to mark them off (and start with the free square marked)
+2) Network the cards, so you type in your name and see the same card
+2a) Have the card live-update if you have it open in two places
+2b) Have a hot-link to view only, eg "#yourname", for stream
+3) Generate cards from any arbitrary set of tiles - allow multiple cardsets
+4) Give each cell an ID such that the positions can be randomized. Free square stays put.
+*/
+function cell_clicked(ev) {
+	console.log(this.dataset.id);
+	if (this.dataset.freebie) return; //Can't unmark the freebie
+	this.classList.toggle("marked");
+}
+
+let nextid = 0;
+document.querySelectorAll("td").forEach(el => {
+	el.onclick = cell_clicked;
+	el.dataset.id = ++nextid;
+	if (el.dataset.freebie) el.classList.add("marked");
+});
+</script>
+</body>
+</html>

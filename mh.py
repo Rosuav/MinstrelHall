@@ -155,6 +155,11 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
+@app.route("/bingo/<channel>")
+@log_to_tmp
+def bingo(channel):
+	return render_template("bingo.html")
+
 if __name__ == "__main__":
 	import logging
 	logging.basicConfig(level=logging.DEBUG)
