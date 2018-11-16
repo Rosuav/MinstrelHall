@@ -62,4 +62,38 @@ BINGO = {
 			"""A reference is made to Alice, Disney or G&S""",
 		],
 	},
+	"ladydreamtv": {
+		"displayname": "Dream Team",
+		"freebie": """Long hair in a drawing""",
+		"cards": [
+			"""Zara obsesses over something""",
+			"""Two people enter lurk simultaneously""",
+			"""It's hot chocolate time!""",
+			"""Zara hits the microphone""",
+			"""Storytelling time with Psycho Zara""",
+
+			"""The cup is filled with single bits""",
+			"""Tier two or three (re)sub""",
+			"""Bun attack!!""",
+			"""Someone has to save the world""",
+			"""Something happens on the wrong layer""",
+
+			"""Zara is broken by a donation""",
+			"""Everyone in chat is a sub""",
+			"""Singing along with song request""",
+			"""Someone raids us with MOAR LOVE""",
+
+			"""Discussion about healer characters""",
+			"""Art of a WoW character""",
+			"""A giveaway is triggered""",
+			"""250-bit jump scare""",
+			"""Hydration reminder pops up""",
+
+			"""People get excited for a cooking stream""",
+			"""Alice.""",
+			"""Zara squeaks with excitement""",
+			"""Someone thanks Zara for the positivity""",
+			"""Someone makes a bad pun""",
+		],
+	},
 }
