@@ -1,5 +1,6 @@
 from __future__ import print_function
 from flask import Flask, render_template, g, Markup, request, redirect
+from flask_sockets import Sockets
 import mistune as md
 import psycopg2
 import subprocess
@@ -14,6 +15,7 @@ import traceback
 import config # Local config variables and passwords, not in source control
 import datasets # Anything big and constant that is in source control but not cluttering up the code
 app = Flask(__name__)
+sockets = Sockets(app)
 
 # TODO: Port to Python 3, the latest psycopg2, and the like. Then take
 # advantage of context managers, merge in the membershipaccess script, etc.
@@ -187,6 +189,12 @@ def bingo(channel):
 		channel=channel, displayname=data["displayname"],
 		cards=cards, include_login=not user
 	)
+
+@sockets.route("/bingo-live")
+def bingo_socket(ws):
+	while not ws.closed:
+		message = ws.receive()
+		ws.send("PRAD: " + message)
 
 if __name__ == "__main__":
 	import logging
