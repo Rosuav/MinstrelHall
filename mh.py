@@ -190,6 +190,8 @@ def bingo(channel):
 		cards=cards, include_login=not user
 	)
 
+# TODO: Switch Apache to using gunicorn instead of wsgi
+# Websockets don't work through wsgi
 @sockets.route("/bingo-live")
 def bingo_socket(ws):
 	while not ws.closed:
