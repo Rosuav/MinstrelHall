@@ -6,11 +6,13 @@ import subprocess
 import os
 import sys
 import time
+import random
 import smtplib
 import binascii
 import functools
 import traceback
 import config # Local config variables and passwords, not in source control
+import datasets # Anything big and constant that is in source control but not cluttering up the code
 app = Flask(__name__)
 
 # TODO: Port to Python 3, the latest psycopg2, and the like. Then take
@@ -158,7 +160,16 @@ def committee_info(hash):
 @app.route("/bingo/<channel>")
 @log_to_tmp
 def bingo(channel):
-	return render_template("bingo.html")
+	data = datasets.BINGO.get(channel.lower())
+	if not data:
+		return "Channel name not recognized - check the link", 404
+	# TODO: Record the user's name for stability
+	cards = list(enumerate(data["cards"], 1))
+	random.shuffle(cards)
+	cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
+	# Note that having more than 25 cards (24 before the freebie) is fine.
+	# It means that not all cells will be shown to all players.
+	return render_template("bingo.html", cards=cards)
 
 if __name__ == "__main__":
 	import logging
