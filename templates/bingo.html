@@ -50,6 +50,11 @@ document.querySelectorAll("td").forEach(el => {
 	el.onclick = cell_clicked;
 	if (el.dataset.freebie) el.classList.add("marked");
 });
+
+const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
+socket.onopen = () => {console.log("Socket connection established."); socket.send("Hello, world");};
+socket.onmessage = (ev) => {console.log("Received message:", ev.data);};
 </script>
 </body>
 </html>
