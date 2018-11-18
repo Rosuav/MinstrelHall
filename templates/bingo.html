@@ -11,6 +11,7 @@ td {
 td.marked {
 	background: #a0f0c0;
 }
+td p {margin: 0;}
 </style>
 </head>
 <body>
@@ -28,9 +29,9 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 <table border>
 {% for row in range(5) %}<tr>{% for cell in range(5) %}{% set c = cards[row*5+cell] %}
 {% if c[0] %}
-<td data-id={{c[0]}}>{{c[1]|safe}}</td>
+<td data-id={{c[0]}}>{{c[1]|markdown}}</td>
 {% else %}
-<td data-id={{c[0]}} data-freebie=1><b>FREE</b><br>{{c[1]|safe}}<br><b>FREE</b></td>
+<td data-id={{c[0]}} data-freebie=1><b>FREE</b>{{c[1]|markdown}}<b>FREE</b></td>
 {% endif %}
 {% endfor %}</tr>{% endfor %}
 </table>
