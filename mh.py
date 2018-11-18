@@ -32,7 +32,7 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
 @app.template_filter()
 def markdown(text):
-	return Markup(md.markdown(text,escape=True))
+	return Markup(md.markdown(text))
 
 def get_db():
 	if not hasattr(g, 'pgsql'):
