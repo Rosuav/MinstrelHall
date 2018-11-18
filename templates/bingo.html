@@ -46,18 +46,16 @@ const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
 function socksend(data) {socket.send(JSON.stringify(data));}
 socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
 socket.onmessage = (ev) => {
-	console.log("Received message:", ev.data);
 	let msg; try {msg = JSON.parse(ev.data);} catch (e) {}
 	if (!msg || !msg.type) return;
 	switch (msg.type) {
 		case "refresh": window.location.reload(); break;
 		case "reset": {
-			msg.marked.forEach((status, idx) => {
-				console.log("Setting", idx, "to", status);
-				if (idx) cells_by_id[idx].classList.toggle("marked", status)
-			});
+			msg.marked.forEach((status, idx) => cells_by_id[idx].classList.toggle("marked", status));
 			break;
 		}
+		case "mark": cells_by_id[msg.id].classList.toggle("marked", msg.status); break;
+		default: console.log("Received message:", ev.data);
 	}
 };
 {% else %}
@@ -65,9 +63,8 @@ function socksend(data) {/* no socket when not logged in - nothing persists */}
 {% endif %}
 
 function cell_clicked(ev) {
-	console.log(this.dataset.id);
 	if (this.dataset.freebie) return; //Can't unmark the freebie
-	this.classList.toggle("marked");
+	socksend({type: "mark", id: parseInt(this.dataset.id, 10), status: this.classList.toggle("marked")});
 }
 
 document.querySelectorAll("td").forEach(el => {

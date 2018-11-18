@@ -183,7 +183,7 @@ def bingo(channel):
 		cards = list(enumerate(data["cards"], 1))
 		if user != "noshuf": random.shuffle(cards) # Hack: Use the name "noshuf" for stable testing
 		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
-		if user: bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1)}
+		if user: bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1), "sockets": set()}
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
@@ -196,6 +196,7 @@ def bingo_socket(ws):
 	user = channel = None
 	while not ws.closed:
 		message = ws.receive()
+		if message is None: break # ?? I think this happens on disconnection?
 		try:
 			msg = json.loads(message)
 		except ValueError:
@@ -216,9 +217,24 @@ def bingo_socket(ws):
 				ws.send(json.dumps({"type": "refresh"}))
 				break
 			channel = c
+			bingo_status[user]["sockets"].add(ws)
+			# print("User", user, "has sockets", bingo_status[user]["sockets"])
 			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"]}))
 			continue
+		if t == "mark":
+			try:
+				bingo_status[user]["marked"][msg["id"]] = status = bool(msg["status"])
+			except KeyError:
+				# malformed message, ignore it
+				pass
+			# Notify all other clients
+			for sock in bingo_status[user]["sockets"]:
+				if sock is not ws:
+					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
+			continue
 		# Otherwise it's an unknown message. Ignore it.
+	bingo_status[user]["sockets"].discard(ws)
+	# print("User", user, "has sockets", bingo_status[user]["sockets"])
 
 if __name__ == "__main__":
 	import logging
