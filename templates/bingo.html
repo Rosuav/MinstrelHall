@@ -39,12 +39,27 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 
 <p><small>Just for fun.</small></p>
 <script>
+const cells_by_id = {};
 {% if user %}
 const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
 const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
 function socksend(data) {socket.send(JSON.stringify(data));}
 socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
-socket.onmessage = (ev) => {console.log("Received message:", ev.data);};
+socket.onmessage = (ev) => {
+	console.log("Received message:", ev.data);
+	let msg; try {msg = JSON.parse(ev.data);} catch (e) {}
+	if (!msg || !msg.type) return;
+	switch (msg.type) {
+		case "refresh": window.location.reload(); break;
+		case "reset": {
+			msg.marked.forEach((status, idx) => {
+				console.log("Setting", idx, "to", status);
+				if (idx) cells_by_id[idx].classList.toggle("marked", status)
+			});
+			break;
+		}
+	}
+};
 {% else %}
 function socksend(data) {/* no socket when not logged in - nothing persists */}
 {% endif %}
@@ -55,10 +70,10 @@ function cell_clicked(ev) {
 	this.classList.toggle("marked");
 }
 
-let nextid = 0;
 document.querySelectorAll("td").forEach(el => {
 	el.onclick = cell_clicked;
 	if (el.dataset.freebie) el.classList.add("marked");
+	cells_by_id[el.dataset.id] = el;
 });
 </script>
 </body>

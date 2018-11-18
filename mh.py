@@ -178,12 +178,12 @@ def bingo(channel):
 		bingo_status[None] = today
 	user = request.args.get("user")
 	if user and user in bingo_status:
-		cards = bingo_status[user]
+		cards = bingo_status[user]["cards"]
 	else:
 		cards = list(enumerate(data["cards"], 1))
 		if user != "noshuf": random.shuffle(cards) # Hack: Use the name "noshuf" for stable testing
 		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
-		if user: bingo_status[user] = cards
+		if user: bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1)}
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
@@ -200,14 +200,23 @@ def bingo_socket(ws):
 			msg = json.loads(message)
 		except ValueError:
 			continue # Ignore unparseable messages
+		if user and user not in bingo_status:
+			# All cards have been reset. Refresh the page.
+			ws.send(json.dumps({"type": "refresh"}))
+			break
 		t = msg.get("type")
 		if t == "init":
 			if user: continue # Already logged in
 			c = msg.get("channel")
 			if c not in datasets.BINGO: continue # Wrong channel name (shouldn't normally happen)
 			user = msg.get("user")
-			if user and c: channel = c
-			ws.send(json.dumps({"type": "reset"}))
+			if not user: continue
+			if user not in bingo_status:
+				# Probably refreshed but got it from cache.
+				ws.send(json.dumps({"type": "refresh"}))
+				break
+			channel = c
+			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"]}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 
