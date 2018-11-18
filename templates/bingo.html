@@ -39,6 +39,16 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 
 <p><small>Just for fun.</small></p>
 <script>
+{% if user %}
+const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
+const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
+function socksend(data) {socket.send(JSON.stringify(data));}
+socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
+socket.onmessage = (ev) => {console.log("Received message:", ev.data);};
+{% else %}
+function socksend(data) {/* no socket when not logged in - nothing persists */}
+{% endif %}
+
 function cell_clicked(ev) {
 	console.log(this.dataset.id);
 	if (this.dataset.freebie) return; //Can't unmark the freebie
@@ -50,14 +60,6 @@ document.querySelectorAll("td").forEach(el => {
 	el.onclick = cell_clicked;
 	if (el.dataset.freebie) el.classList.add("marked");
 });
-
-{% if user %}
-const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
-const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
-function socksend(data) {socket.send(JSON.stringify(data));}
-socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
-socket.onmessage = (ev) => {console.log("Received message:", ev.data);};
-{% endif %}
 </script>
 </body>
 </html>
