@@ -1,3 +1,6 @@
 git pull
-sudo systemctl start mhwww
-sudo systemctl kill -s HUP mhwww
+if systemctl is-active --quiet mhwww; then
+	sudo systemctl kill -s HUP mhwww
+else
+	sudo systemctl start mhwww
+fi
