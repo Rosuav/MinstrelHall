@@ -181,7 +181,7 @@ def bingo(channel):
 		cards = bingo_status[user]
 	else:
 		cards = list(enumerate(data["cards"], 1))
-		random.shuffle(cards)
+		if user != "noshuf": random.shuffle(cards) # Hack: Use the name "noshuf" for stable testing
 		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
 		if user: bingo_status[user] = cards
 	# Note that having more than 25 cards (24 before the freebie) is fine.
