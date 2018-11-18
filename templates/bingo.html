@@ -3,6 +3,7 @@
 <head>
 <title>{{displayname}} Bingo</title>
 <style>
+table, th, td {border: 1px solid black;}
 td {
 	width: 7em;
 	height: 7em;
@@ -26,7 +27,7 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 <input type=submit value="Do it!">
 </form></p>
 {% endif %}
-<table border>
+<table>
 {% for row in range(5) %}<tr>{% for cell in range(5) %}{% set c = cards[row*5+cell] %}
 {% if c[0] %}
 <td data-id={{c[0]}}>{{c[1]|markdown}}</td>
