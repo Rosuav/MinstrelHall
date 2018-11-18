@@ -6,6 +6,7 @@ import psycopg2
 import subprocess
 import os
 import sys
+import json
 import time
 import random
 import smtplib
@@ -188,16 +189,28 @@ def bingo(channel):
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
 		channel=channel, displayname=data["displayname"],
-		cards=cards, include_login=not user
+		cards=cards, user=user
 	)
 
-# TODO: Switch Apache to using gunicorn instead of wsgi
-# Websockets don't work through wsgi
 @sockets.route("/bingo-live")
 def bingo_socket(ws):
+	user = channel = None
 	while not ws.closed:
 		message = ws.receive()
-		ws.send("PRAD: %s" % message)
+		try:
+			msg = json.loads(message)
+		except ValueError:
+			continue # Ignore unparseable messages
+		t = msg.get("type")
+		if t == "init":
+			if user: continue # Already logged in
+			c = msg.get("channel")
+			if c not in datasets.BINGO: continue # Wrong channel name (shouldn't normally happen)
+			user = msg.get("user")
+			if user and c: channel = c
+			ws.send(json.dumps({"type": "reset"}))
+			continue
+		# Otherwise it's an unknown message. Ignore it.
 
 if __name__ == "__main__":
 	import logging

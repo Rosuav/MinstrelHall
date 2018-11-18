@@ -21,7 +21,7 @@ td p {margin: 0;}
 Spot things as they happen during a <a href="https://twitch.tv/{{channel}}">{{displayname}} live stream</a> and see if you can claim
 an entire row or column in a single stream!
 </p>
-{% if include_login %}
+{% if not user %}
 <form><p>
 Want to be on the leaderboard? <label>Enter your name here: <input name=user></label>
 <input type=submit value="Do it!">
@@ -51,10 +51,13 @@ document.querySelectorAll("td").forEach(el => {
 	if (el.dataset.freebie) el.classList.add("marked");
 });
 
+{% if user %}
 const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
 const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
-socket.onopen = () => {console.log("Socket connection established."); socket.send("Hello, world");};
+function socksend(data) {socket.send(JSON.stringify(data));}
+socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
 socket.onmessage = (ev) => {console.log("Received message:", ev.data);};
+{% endif %}
 </script>
 </body>
 </html>
