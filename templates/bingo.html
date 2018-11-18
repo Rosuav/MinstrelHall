@@ -22,10 +22,10 @@ Spot things as they happen during a <a href="https://twitch.tv/{{channel}}">{{di
 an entire row or column in a single stream!
 </p>
 {% if include_login %}
-<p><form>
+<form><p>
 Want to be on the leaderboard? <label>Enter your name here: <input name=user></label>
 <input type=submit value="Do it!">
-</form></p>
+</p></form>
 {% endif %}
 <table>
 {% for row in range(5) %}<tr>{% for cell in range(5) %}{% set c = cards[row*5+cell] %}
