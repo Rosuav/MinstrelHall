@@ -218,7 +218,6 @@ def bingo_socket(ws):
 				break
 			channel = c
 			bingo_status[user]["sockets"].add(ws)
-			# print("User", user, "has sockets", bingo_status[user]["sockets"])
 			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"]}))
 			continue
 		if t == "mark":
@@ -234,7 +233,6 @@ def bingo_socket(ws):
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	bingo_status[user]["sockets"].discard(ws)
-	# print("User", user, "has sockets", bingo_status[user]["sockets"])
 
 if __name__ == "__main__":
 	import logging
