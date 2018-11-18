@@ -226,8 +226,12 @@ def bingo_socket(ws):
 			except KeyError:
 				# malformed message, ignore it
 				pass
+			u = bingo_status[user]
+			# TODO: Calculate the best score
+			# Try the five rows, the five columns, and the two diags
+			# Map through u["cards"] and look up their statuses by ID, not by position
 			# Notify all other clients
-			for sock in bingo_status[user]["sockets"]:
+			for sock in u["sockets"]:
 				if sock is not ws:
 					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
 			continue
