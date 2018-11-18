@@ -197,7 +197,7 @@ def bingo(channel):
 def bingo_socket(ws):
 	while not ws.closed:
 		message = ws.receive()
-		ws.send("PRAD: " + message)
+		ws.send("PRAD: %s" % message)
 
 if __name__ == "__main__":
 	import logging
