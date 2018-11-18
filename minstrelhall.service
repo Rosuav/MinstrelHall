@@ -1,0 +1,7 @@
+[Unit]
+Description=Minstrel Hall app server
+
+[Service]
+User=rosuav
+ExecStart=/usr/local/bin/gunicorn -k flask_sockets.worker mh:app --bind=127.0.0.1:1221
+WorkingDirectory=/home/rosuav/MinstrelHall
