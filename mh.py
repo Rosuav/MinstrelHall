@@ -265,7 +265,7 @@ def bingo_socket(ws):
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	if channel:
-		if user:
+		if user and user in channel:
 			channel[user]["sockets"].discard(ws)
 		channel[None]["all_sockets"].discard(ws)
 
