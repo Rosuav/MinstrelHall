@@ -24,14 +24,6 @@ sockets = Sockets(app)
 # (The psycopg2 previously in use didn't support context managers. No, I was
 # NOT running this on Python 2.4!)
 
-# Enable Unicode return values for all database queries
-# This would be the default in Python 3, but in Python 2, we
-# need to enable these two extensions.
-# http://initd.org/psycopg/docs/usage.html#unicode-handling
-import psycopg2.extensions
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
-
 @app.template_filter()
 def markdown(text):
 	return Markup(md.markdown(text))
@@ -62,19 +54,17 @@ def log_to_tmp(func):
 @app.route("/")
 def mainpage():
 	db = get_db()
-	cur = db.cursor()
-	cur.execute("select id,name,dm,room,looking,playingtime from campaigns where room!='dead'")
-	campaigns = cur.fetchall()
-	db.commit()
+	with db, db.cursor() as cur:
+		cur.execute("select id,name,dm,room,looking,playingtime from campaigns where room!='dead'")
+		campaigns = cur.fetchall()
 	return render_template("main.html", campaigns=campaigns)
 
 @app.route("/campaign/<int:id>")
 def campaign(id):
 	db = get_db()
-	cur = db.cursor()
-	cur.execute("select id,name,dm,room,looking,playingtime,description from campaigns where id=%s", (id,))
-	cp = cur.fetchone()
-	db.commit()
+	with db, db.cursor() as cur:
+		cur.execute("select id,name,dm,room,looking,playingtime,description from campaigns where id=%s", (id,))
+		cp = cur.fetchone()
 	if not cp: return Response('Campaign not found', 404)
 	return render_template("campaign.html", cp=cp)
 
@@ -83,14 +73,14 @@ def membership(hash):
 	if not request.is_secure:
 		return redirect("https://gideon.rosuav.com/memb/"+hash)
 	db = get_db()
-	cur = db.cursor()
-	cur.execute("select email from membership where hash=%s", (hash,))
-	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
-	for row in cur:
-		if row[0] in emails: break
-	else:
-		# Not found - wrong hash, or no longer subscribed
-		return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
+	with db, db.cursor() as cur:
+		cur.execute("select email from membership where hash=%s", (hash,))
+		emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0].split("\n")
+		for row in cur:
+			if row[0] in emails: break
+		else:
+			# Not found - wrong hash, or no longer subscribed
+			return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
 	# PyDrive isn't set up in the system Python, so we explicitly invoke a different Python to do the work for us.
 	# CJA 20160516: This is no longer strictly necessary, but I haven't gotten around to merging yet.
 	p = subprocess.Popen(["/usr/local/bin/python2.7","membaccess.py","html"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd="/home/gideon/MembershipAccess")
@@ -104,23 +94,21 @@ def membership_setup():
 		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
 	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
-	if bytes is not str: emails = emails.decode("ascii") # Py2/Py3 compat
-	emails = emails.split("\n")
-	cur = db.cursor()
-	cur.execute("create table if not exists membership (email varchar primary key,hash varchar not null unique)")
-	cur.execute("select email from membership")
-	for email in cur:
-		try: emails.remove(email[0])
+	emails = emails.decode("ascii").split("\n")
+	with db, db.cursor() as cur:
+		cur.execute("create table if not exists membership (email varchar primary key,hash varchar not null unique)")
+		cur.execute("select email from membership")
+		for email in cur:
+			try: emails.remove(email[0])
+			except ValueError: pass
+		try: emails.remove("")
 		except ValueError: pass
-	try: emails.remove("")
-	except ValueError: pass
-	if emails:
-		s=smtplib.SMTP("localhost")
-		for email in emails:
-			hash = binascii.hexlify(os.urandom(8))
-			if bytes is not str: hash = hash.decode("ascii")
-			cur.execute("insert into membership values (%s, %s)", (email, hash))
-			s.sendmail("no-reply@gilbertandsullivan.org.au",[email],"""Content-Type: text/plain; charset="us-ascii"
+		if emails:
+			s=smtplib.SMTP("localhost")
+			for email in emails:
+				hash = binascii.hexlify(os.urandom(8)).decode("ascii")
+				cur.execute("insert into membership values (%s, %s)", (email, hash))
+				s.sendmail("no-reply@gilbertandsullivan.org.au",[email],"""Content-Type: text/plain; charset="us-ascii"
 From: no-reply@gilbertandsullivan.org.au
 To: %s
 Subject: Committee information access
@@ -135,9 +123,7 @@ Thanks!
 Chris Angelico
 Domainmaster, gilbertandsullivan.org.au
 """ % (email, hash))
-		db.commit()
-		return "Sent emails to:<ul><li>"+"<li>".join(emails)+"</ul>"
-	db.commit()
+			return "Sent emails to:<ul><li>"+"<li>".join(emails)+"</ul>"
 	return "No new emails to send."
 
 @app.route("/committee/<hash>")
@@ -147,19 +133,17 @@ def committee_info(hash):
 	if not request.is_secure:
 		return redirect("https://gideon.rosuav.com/committee/"+hash)
 	db = get_db()
-	cur = db.cursor()
-	cur.execute("select email from membership where hash=%s", (hash,))
-	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
-	if bytes is not str: emails = emails.decode("ascii") # Py2/Py3 compat
-	emails = emails.split("\n")
-	for row in cur:
-		if row[0] in emails: break
-	else:
-		# Not found - wrong hash, or no longer subscribed
-		return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
-	cur.execute("select gdrivepwd from committee")
-	passwd = cur.fetchall()[0][0]
-	db.commit()
+	with db, db.cursor() as cur:
+		cur.execute("select email from membership where hash=%s", (hash,))
+		emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
+		emails = emails.decode("ascii").split("\n")
+		for row in cur:
+			if row[0] in emails: break
+		else:
+			# Not found - wrong hash, or no longer subscribed
+			return "<!doctype html><html><head><title>Invalid access code</title></head><body><h1>Invalid access code</h1></body></html>"
+		cur.execute("select gdrivepwd from committee")
+		passwd = cur.fetchall()[0][0]
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
 # TODO: Have a /bingo route that gives a nice list of available channels
