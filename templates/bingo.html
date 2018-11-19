@@ -86,7 +86,8 @@ socket.onmessage = (ev) => {
 
 function cell_clicked(ev) {
 	if (this.dataset.freebie) return; //Can't unmark the freebie
-	if (user) socksend({type: "mark", id: parseInt(this.dataset.id, 10), status: this.classList.toggle("marked")});
+	const status = this.classList.toggle("marked");
+	if (user) socksend({type: "mark", id: parseInt(this.dataset.id, 10), status});
 }
 
 document.querySelectorAll("td").forEach(el => {
