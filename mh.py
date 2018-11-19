@@ -184,7 +184,10 @@ def bingo(channel):
 		cards = list(enumerate(data["cards"], 1))
 		if user != "noshuf": random.shuffle(cards) # Hack: Use the name "noshuf" for stable testing
 		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
-		if user: bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1), "sockets": set()}
+		if user:
+			bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1), "sockets": set()}
+			baseline = bingo_status[None]["scores"][0]
+			if user not in baseline: baseline.append(user)
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
@@ -220,7 +223,7 @@ def bingo_socket(ws):
 				break
 			channel = c
 			bingo_status[user]["sockets"].add(ws)
-			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"]}))
+			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"], "scores": bingo_status[None]["scores"]}))
 			continue
 		if t == "mark":
 			try:
@@ -251,7 +254,7 @@ def bingo_socket(ws):
 			for userinfo in bingo_status.values():
 				if "sockets" in userinfo:
 					for sock in userinfo["sockets"]:
-						ws.send(json.dumps({"type": "scores", "scores": sc}))
+						sock.send(json.dumps({"type": "scores", "scores": sc}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	if user:

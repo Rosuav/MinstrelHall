@@ -47,10 +47,11 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 <script>
 const cells_by_id = {};
 {% if user %}
+const user = "{{user}}";
 const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
 const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
 function socksend(data) {socket.send(JSON.stringify(data));}
-socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user: "{{user}}"});};
+socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user});};
 socket.onmessage = (ev) => {
 	let msg; try {msg = JSON.parse(ev.data);} catch (e) {}
 	if (!msg || !msg.type) return;
@@ -58,6 +59,22 @@ socket.onmessage = (ev) => {
 		case "refresh": window.location.reload(); break;
 		case "reset": {
 			msg.marked.forEach((status, idx) => cells_by_id[idx].classList.toggle("marked", status));
+			//Fall through to scores handler
+		}
+		case "scores": {
+			const seen = {};
+			const lines = [];
+			for (let score = 5; score >= 1; --score) {
+				for (let name of msg.scores[score-1]) {
+					if (seen[name]) continue;
+					seen[name] = 1;
+					if (name === user) lines.push(`<b>[${score}] ${name}<\/b>`);
+					else if (lines.length < 10) lines.push(`[${score}] ${name}`);
+					//Once we have ten lines, the only one we'll add is the user's own.
+				}
+				if (lines.length >= 10 && seen[user]) break;
+			}
+			document.getElementById("leaderboard").innerHTML = "<ul><li>" + lines.join("</li><li>") + "</li></ul>";
 			break;
 		}
 		case "mark": cells_by_id[msg.id].classList.toggle("marked", msg.status); break;
