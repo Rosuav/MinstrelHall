@@ -162,6 +162,8 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
+# TODO: Have a /bingo route that gives a nice list of available channels
+
 bingo_status = collections.defaultdict(lambda: {None: {"all_sockets": set(), "scores": [[], [], [], [], []]}}, {None: 0})
 @app.route("/bingo/<channel>")
 @log_to_tmp
