@@ -252,10 +252,16 @@ def bingo_socket(ws):
 			# Notify all other clients
 			for sock in u["sockets"]:
 				if sock is not ws:
-					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
+					try:
+						sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
+					except WebSocketError:
+						pass # Probably a dead socket. It'll get reaped soon.
 			# Send high score status to ALL sockets
 			for sock in channel[None]["all_sockets"]:
-				sock.send(json.dumps({"type": "scores", "scores": sc}))
+				try:
+					sock.send(json.dumps({"type": "scores", "scores": sc}))
+				except WebSocketError:
+					pass # Ditto
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	if channel:
