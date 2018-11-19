@@ -90,6 +90,8 @@ def membership(hash):
 @app.route("/committee")
 @log_to_tmp
 def membership_setup():
+	import pprint
+	return "<pre>" + pprint.pformat(request.headers) + "</pre>"
 	if not request.is_secure:
 		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
