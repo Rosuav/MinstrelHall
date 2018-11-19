@@ -18,6 +18,7 @@ td.marked {
 td p {margin: 0;}
 footer {margin-top: 1.5em; font-size: 75%;}
 h1 {font-size: 2em;}
+img {width: 28px; height: 28px;}
 </style>
 </head>
 <body>
@@ -95,6 +96,7 @@ document.querySelectorAll("td").forEach(el => {
 	else el.onclick = cell_clicked;
 	cells_by_id[el.dataset.id] = el;
 });
+document.querySelectorAll("img").forEach(el => el.title = el.alt);
 </script>
 </body>
 </html>
