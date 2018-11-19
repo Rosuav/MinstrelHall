@@ -236,7 +236,8 @@ def bingo_socket(ws):
 					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
-	bingo_status[user]["sockets"].discard(ws)
+	if user:
+		bingo_status[user]["sockets"].discard(ws)
 
 if __name__ == "__main__":
 	import logging
