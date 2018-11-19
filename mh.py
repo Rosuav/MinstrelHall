@@ -65,8 +65,8 @@ def campaign(id):
 
 @app.route("/memb/<hash>")
 def membership(hash):
-	#if not request.is_secure: # TODO: Detect if the pre-proxy request was via HTTPS
-	#	return redirect("https://gideon.rosuav.com/committee")
+	if request.headers.get("X-Was-On-HTTPS") == "no":
+		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
 	with db, db.cursor() as cur:
 		cur.execute("select email from membership where hash=%s", (hash,))
@@ -86,8 +86,8 @@ def membership(hash):
 @app.route("/committee")
 @log_to_tmp
 def membership_setup():
-	#if not request.is_secure: # TODO: Detect if the pre-proxy request was via HTTPS
-	#	return redirect("https://gideon.rosuav.com/committee")
+	if request.headers.get("X-Was-On-HTTPS") == "no":
+		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
 	emails = subprocess.Popen(["sudo", "list_members", "committee"], stdout=subprocess.PIPE).communicate()[0]
 	emails = emails.decode("ascii").split("\n")
@@ -126,8 +126,8 @@ Domainmaster, gilbertandsullivan.org.au
 @log_to_tmp
 def committee_info(hash):
 	# TODO: Dedup.
-	#if not request.is_secure: # TODO: Detect if the pre-proxy request was via HTTPS
-	#	return redirect("https://gideon.rosuav.com/committee")
+	if request.headers.get("X-Was-On-HTTPS") == "no":
+		return redirect("https://gideon.rosuav.com/committee")
 	db = get_db()
 	with db, db.cursor() as cur:
 		cur.execute("select email from membership where hash=%s", (hash,))
