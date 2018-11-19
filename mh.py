@@ -19,11 +19,6 @@ import datasets # Anything big and constant that is in source control but not cl
 app = Flask(__name__)
 sockets = Sockets(app)
 
-# TODO: Port to Python 3, the latest psycopg2, and the like. Then take
-# advantage of context managers, merge in the membershipaccess script, etc.
-# (The psycopg2 previously in use didn't support context managers. No, I was
-# NOT running this on Python 2.4!)
-
 @app.template_filter()
 def markdown(text):
 	return Markup(md.markdown(text))
