@@ -219,7 +219,7 @@ def bingo_socket(ws):
 			user = msg.get("user")
 			if not user:
 				# If not logged in, just give the scores, nothing else
-				ws.send(json.dumps({"type": "scores", "scores": channel["scores"]}))
+				ws.send(json.dumps({"type": "scores", "scores": channel[None]["scores"]}))
 				continue
 			if user not in channel:
 				# Probably refreshed but got it from cache. The cards need to be rerandomized.
