@@ -214,7 +214,10 @@ def bingo_socket(ws):
 			c = msg.get("channel")
 			if c not in datasets.BINGO: continue # Wrong channel name (shouldn't normally happen)
 			user = msg.get("user")
-			if not user: continue
+			if not user:
+				# If not logged in, just give the scores, nothing else
+				ws.send(json.dumps({"type": "scores", "scores": bingo_status[None]["scores"]}))
+				continue
 			if user not in bingo_status:
 				# Probably refreshed but got it from cache.
 				ws.send(json.dumps({"type": "refresh"}))

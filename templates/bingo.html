@@ -52,7 +52,7 @@ const cells_by_id = {};
 const user = {{user|safe}};
 const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
 const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
-function socksend(data) {if (user) socket.send(JSON.stringify(data));}
+function socksend(data) {socket.send(JSON.stringify(data));}
 socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user});};
 socket.onmessage = (ev) => {
 	let msg; try {msg = JSON.parse(ev.data);} catch (e) {}
@@ -86,7 +86,7 @@ socket.onmessage = (ev) => {
 
 function cell_clicked(ev) {
 	if (this.dataset.freebie) return; //Can't unmark the freebie
-	socksend({type: "mark", id: parseInt(this.dataset.id, 10), status: this.classList.toggle("marked")});
+	if (user) socksend({type: "mark", id: parseInt(this.dataset.id, 10), status: this.classList.toggle("marked")});
 }
 
 document.querySelectorAll("td").forEach(el => {
