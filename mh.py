@@ -14,7 +14,7 @@ import binascii
 import functools
 import traceback
 import collections
-import config # Local config variables and passwords, not in source control (TODO: create config_sample)
+import config # Local config variables and passwords, not in source control (see config_sample.py)
 import datasets # Anything big and constant that is in source control but not cluttering up the code
 app = Flask(__name__)
 sockets = Sockets(app)
