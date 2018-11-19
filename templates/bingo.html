@@ -27,7 +27,7 @@ h1 {font-size: 2em;}
 Spot things as they happen during a <a href="https://twitch.tv/{{channel}}">{{displayname}} live stream</a> and see if you can claim
 an entire row or column in a single stream!
 </p>
-{% if not user %}
+{% if user == "null" %}
 <form><p>
 Want to be on the leaderboard? <label>Enter your name here: <input name=user></label>
 <input type=submit value="Do it!">
@@ -49,11 +49,10 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 <footer>Just for fun. Created by Chris Angelico aka <a href="https://github.com/Rosuav">Rosuav</a>.</footer>
 <script>
 const cells_by_id = {};
-{% if user %}
-const user = "{{user}}";
+const user = {{user|safe}};
 const protocol = window.location.protocol == "https:" ? "wss://" : "ws://";
 const socket = new WebSocket(protocol + window.location.host + "/bingo-live");
-function socksend(data) {socket.send(JSON.stringify(data));}
+function socksend(data) {if (user) socket.send(JSON.stringify(data));}
 socket.onopen = () => {console.log("Socket connection established."); socksend({type: "init", channel: "{{channel}}", user});};
 socket.onmessage = (ev) => {
 	let msg; try {msg = JSON.parse(ev.data);} catch (e) {}
@@ -84,9 +83,6 @@ socket.onmessage = (ev) => {
 		default: console.log("Received message:", ev.data);
 	}
 };
-{% else %}
-function socksend(data) {/* no socket when not logged in - nothing persists */}
-{% endif %}
 
 function cell_clicked(ev) {
 	if (this.dataset.freebie) return; //Can't unmark the freebie

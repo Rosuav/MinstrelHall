@@ -161,7 +161,7 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
-bingo_status = {None: {"date": 0, "scores": [[], [], [], [], []]}}
+bingo_status = {None: {"date": 0, "all_sockets": set(), "scores": [[], [], [], [], []]}}
 @app.route("/bingo/<channel>")
 @log_to_tmp
 def bingo(channel):
@@ -173,7 +173,7 @@ def bingo(channel):
 	today = (int(time.time()) - 86400//2) // 86400
 	if bingo_status[None]["date"] != today:
 		bingo_status.clear()
-		bingo_status[None] = {"date": today, "scores": [[], [], [], [], []]}
+		bingo_status[None] = {"date": today, "all_sockets": set(), "scores": [[], [], [], [], []]}
 	user = request.args.get("user")
 	if user and user in bingo_status:
 		cards = bingo_status[user]["cards"]
@@ -189,13 +189,14 @@ def bingo(channel):
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
 		channel=channel, displayname=data["displayname"],
-		cards=cards, user=user
+		cards=cards, user=json.dumps(user)
 	)
 
 @sockets.route("/bingo-live")
 @log_to_tmp
 def bingo_socket(ws):
 	user = channel = None
+	bingo_status[None]["all_sockets"].add(ws)
 	while not ws.closed:
 		message = ws.receive()
 		if message is None: break # ?? I think this happens on disconnection?
@@ -248,14 +249,13 @@ def bingo_socket(ws):
 				if sock is not ws:
 					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
 			# Send high score status to ALL sockets
-			for userinfo in bingo_status.values():
-				if "sockets" in userinfo:
-					for sock in userinfo["sockets"]:
-						sock.send(json.dumps({"type": "scores", "scores": sc}))
+			for sock in bingo_status[None]["all_sockets"]:
+				sock.send(json.dumps({"type": "scores", "scores": sc}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	if user:
 		bingo_status[user]["sockets"].discard(ws)
+	bingo_status[None]["all_sockets"].discard(ws)
 
 if __name__ == "__main__":
 	import logging
