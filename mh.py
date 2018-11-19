@@ -266,8 +266,8 @@ def bingo_socket(ws):
 		# Otherwise it's an unknown message. Ignore it.
 	if channel:
 		if user:
-			channel["sockets"].discard(ws)
-		channel["all_sockets"].discard(ws)
+			channel[user]["sockets"].discard(ws)
+		channel[None]["all_sockets"].discard(ws)
 
 if __name__ == "__main__":
 	import logging
