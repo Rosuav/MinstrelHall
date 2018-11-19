@@ -161,7 +161,7 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
-bingo_status = {None: 0}
+bingo_status = {None: {"date": 0, "scores": [[], [], [], [], []]}}
 @app.route("/bingo/<channel>")
 @log_to_tmp
 def bingo(channel):
@@ -174,9 +174,9 @@ def bingo(channel):
 	# Prune the bingo status dict if it's past noon in UTC
 	# Yeah that's an odd boundary to use. Got a better one?
 	today = (int(time.time()) - 86400//2) // 86400
-	if bingo_status[None] != today:
+	if bingo_status[None]["date"] != today:
 		bingo_status.clear()
-		bingo_status[None] = today
+		bingo_status[None] = {"date": today, "scores": [[], [], [], [], []]}
 	user = request.args.get("user")
 	if user and user in bingo_status:
 		cards = bingo_status[user]["cards"]
@@ -193,6 +193,7 @@ def bingo(channel):
 	)
 
 @sockets.route("/bingo-live")
+@log_to_tmp
 def bingo_socket(ws):
 	user = channel = None
 	while not ws.closed:
@@ -225,16 +226,32 @@ def bingo_socket(ws):
 			try:
 				bingo_status[user]["marked"][msg["id"]] = status = bool(msg["status"])
 			except KeyError:
-				# malformed message, ignore it
-				pass
+				# malformed message or not logged in, ignore it
+				continue
 			u = bingo_status[user]
-			# TODO: Calculate the best score
-			# Try the five rows, the five columns, and the two diags
-			# Map through u["cards"] and look up their statuses by ID, not by position
+			# Calculate the best score. For now, don't bother highlighting where that is.
+			best = 1 # Since the freebie starts out selected, you can never do worse than 1/5
+			for indices in datasets.BINGO_INDICES:
+				score = sum(u["marked"][u["cards"][i][0]] for i in indices)
+				if score > best: best = score
+			sc = bingo_status[None]["scores"]
+			# Add this person to any leaderboard now qualified
+			for score, users in enumerate(sc[:best]):
+				if user not in users:
+					users.append(user)
+			# Remove from any leaderboard no longer qualified
+			for users in sc[best:]:
+				try: users.remove(user)
+				except ValueError: pass
 			# Notify all other clients
 			for sock in u["sockets"]:
 				if sock is not ws:
 					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
+			# Send high score status to ALL sockets
+			for userinfo in bingo_status.values():
+				if "sockets" in userinfo:
+					for sock in userinfo["sockets"]:
+						ws.send(json.dumps({"type": "scores", "scores": sc}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
 	if user:

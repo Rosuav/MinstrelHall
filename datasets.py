@@ -97,3 +97,11 @@ BINGO = {
 		],
 	},
 }
+
+BINGO_INDICES = []
+for row in range(5):
+	BINGO_INDICES.append(range(row * 5, row * 5 + 5))
+for col in range(5):
+	BINGO_INDICES.append(range(col, col + 25, 5))
+BINGO_INDICES.append(range(0, 26, 6)) # Top-left to bottom right
+BINGO_INDICES.append(range(4, 21, 4)) # Top-right to bottom left
