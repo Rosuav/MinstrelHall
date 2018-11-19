@@ -13,7 +13,8 @@ import smtplib
 import binascii
 import functools
 import traceback
-import config # Local config variables and passwords, not in source control
+import collections
+import config # Local config variables and passwords, not in source control (TODO: create config_sample)
 import datasets # Anything big and constant that is in source control but not cluttering up the code
 app = Flask(__name__)
 sockets = Sockets(app)
@@ -161,7 +162,7 @@ def committee_info(hash):
 	db.commit()
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
-bingo_status = {None: {"date": 0, "all_sockets": set(), "scores": [[], [], [], [], []]}}
+bingo_status = collections.defaultdict(lambda: {None: {"all_sockets": set(), "scores": [[], [], [], [], []]}}, {None: 0})
 @app.route("/bingo/<channel>")
 @log_to_tmp
 def bingo(channel):
@@ -171,19 +172,20 @@ def bingo(channel):
 	# Prune the bingo status dict if it's past noon in UTC
 	# Yeah that's an odd boundary to use. Got a better one?
 	today = (int(time.time()) - 86400//2) // 86400
-	if bingo_status[None]["date"] != today:
+	if bingo_status[None] != today:
 		bingo_status.clear()
-		bingo_status[None] = {"date": today, "all_sockets": set(), "scores": [[], [], [], [], []]}
+		bingo_status[None] = today
+	status = bingo_status[channel]
 	user = request.args.get("user")
-	if user and user in bingo_status:
-		cards = bingo_status[user]["cards"]
+	if user and user in status:
+		cards = status[user]["cards"]
 	else:
 		cards = list(enumerate(data["cards"], 1))
 		if user != "noshuf": random.shuffle(cards) # Hack: Use the name "noshuf" for stable testing
 		cards.insert(12, (0, data.get("freebie", "&nbsp;"))) # Always in the middle square - not randomized
 		if user:
-			bingo_status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1), "sockets": set()}
-			baseline = bingo_status[None]["scores"][0]
+			status[user] = {"cards": cards, "marked": [True] + [False] * (len(cards)-1), "sockets": set()}
+			baseline = status[None]["scores"][0]
 			if user not in baseline: baseline.append(user)
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
@@ -195,8 +197,7 @@ def bingo(channel):
 @sockets.route("/bingo-live")
 @log_to_tmp
 def bingo_socket(ws):
-	user = channel = None
-	bingo_status[None]["all_sockets"].add(ws)
+	user = channel = today = None
 	while not ws.closed:
 		message = ws.receive()
 		if message is None: break # ?? I think this happens on disconnection?
@@ -204,41 +205,42 @@ def bingo_socket(ws):
 			msg = json.loads(message)
 		except ValueError:
 			continue # Ignore unparseable messages
-		if user and user not in bingo_status:
+		if today and bingo_status[None] != today:
 			# All cards have been reset. Refresh the page.
 			ws.send(json.dumps({"type": "refresh"}))
 			break
 		t = msg.get("type")
 		if t == "init":
-			if user: continue # Already logged in
+			if channel: continue # Already initialized
 			c = msg.get("channel")
 			if c not in datasets.BINGO: continue # Wrong channel name (shouldn't normally happen)
+			channel = bingo_status[c]; today = bingo_status[None]
+			channel[None]["all_sockets"].add(ws)
 			user = msg.get("user")
 			if not user:
 				# If not logged in, just give the scores, nothing else
-				ws.send(json.dumps({"type": "scores", "scores": bingo_status[None]["scores"]}))
+				ws.send(json.dumps({"type": "scores", "scores": channel["scores"]}))
 				continue
-			if user not in bingo_status:
-				# Probably refreshed but got it from cache.
+			if user not in channel:
+				# Probably refreshed but got it from cache. The cards need to be rerandomized.
 				ws.send(json.dumps({"type": "refresh"}))
 				break
-			channel = c
-			bingo_status[user]["sockets"].add(ws)
-			ws.send(json.dumps({"type": "reset", "marked": bingo_status[user]["marked"], "scores": bingo_status[None]["scores"]}))
+			channel[user]["sockets"].add(ws)
+			ws.send(json.dumps({"type": "reset", "marked": channel[user]["marked"], "scores": channel[None]["scores"]}))
 			continue
 		if t == "mark":
 			try:
-				bingo_status[user]["marked"][msg["id"]] = status = bool(msg["status"])
+				channel[user]["marked"][msg["id"]] = status = bool(msg["status"])
 			except KeyError:
 				# malformed message or not logged in, ignore it
 				continue
-			u = bingo_status[user]
+			u = channel[user]
 			# Calculate the best score. For now, don't bother highlighting where that is.
 			best = 1 # Since the freebie starts out selected, you can never do worse than 1/5
 			for indices in datasets.BINGO_INDICES:
 				score = sum(u["marked"][u["cards"][i][0]] for i in indices)
 				if score > best: best = score
-			sc = bingo_status[None]["scores"]
+			sc = channel[None]["scores"]
 			# Add this person to any leaderboard now qualified
 			for score, users in enumerate(sc[:best]):
 				if user not in users:
@@ -252,13 +254,14 @@ def bingo_socket(ws):
 				if sock is not ws:
 					sock.send(json.dumps({"type": "mark", "id": msg["id"], "status": status}))
 			# Send high score status to ALL sockets
-			for sock in bingo_status[None]["all_sockets"]:
+			for sock in channel[None]["all_sockets"]:
 				sock.send(json.dumps({"type": "scores", "scores": sc}))
 			continue
 		# Otherwise it's an unknown message. Ignore it.
-	if user:
-		bingo_status[user]["sockets"].discard(ws)
-	bingo_status[None]["all_sockets"].discard(ws)
+	if channel:
+		if user:
+			channel["sockets"].discard(ws)
+		channel["all_sockets"].discard(ws)
 
 if __name__ == "__main__":
 	import logging
