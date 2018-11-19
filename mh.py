@@ -42,7 +42,7 @@ def get_db():
 	return g.pgsql
 
 def log_to_tmp(func):
-	"""As well as regular exception processing, log them to /tmp"""
+	"""As well as regular exception processing, log them to /tmp and stderr"""
 	@functools.wraps(func)
 	def wrapper(*a, **kw):
 		try:
@@ -54,6 +54,7 @@ def log_to_tmp(func):
 				print(sys.version, file=f)
 				traceback.print_exc(file=f)
 				print("----------------------", file=f)
+			traceback.print_exc(file=sys.stderr)
 			raise
 	return wrapper
 
