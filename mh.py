@@ -80,7 +80,7 @@ def membership(hash):
 	# CJA 20160516: This is no longer strictly necessary, but I haven't gotten around to merging yet.
 	# CJA 20181119: I'm not sure this is even being used any more. It also seems to be broken atm.
 	p = subprocess.Popen(["/usr/local/bin/python2.7","membaccess.py","html"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd="/home/gideon/MembershipAccess")
-	return p.communicate()[0] # TODO: Make sure this can't block
+	return p.communicate()[0]
 
 @app.route("/memb")
 @app.route("/committee")
