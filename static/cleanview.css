@@ -1,0 +1,2 @@
+/* Cut down the bingo board to just the board itself */
+section, footer, aside {display: none;}
