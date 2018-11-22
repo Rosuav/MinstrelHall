@@ -64,6 +64,40 @@ BINGO = {
 			"""A reference is made to Alice, Disney or G&S""",
 		],
 	},
+	"rosuav-csgo": {
+		"displayname": "Counter-Strike",
+		"freebie": """Someone is salty in text chat""",
+		"cards": [
+			"""Someone gets picked down mid at round start""",
+			"""Non-standard knife sighting""",
+			"""Knife kill""",
+			"""Idler in spawn""",
+
+			"""One-Deag (or just any Deagle headshot)""",
+			"""Terrorists rush B""",
+			"""Troll strategic call""",
+			"""Glock kill outside of pistols round""",
+			"""Vote kick for unknown reason""",
+
+			"""Soundboard player""",
+			"""AWP double kill""",
+			"""Panicked over-rotation call""",
+			"""Spray after kill""",
+			"""Someone knifes a teammate repeatedly""",
+
+			"""Someone asks for an AWP drop (or better)""",
+			'''"98 in four"''',
+			"""Fake plant/defuse baits out a kill""",
+			"""Scoped-in player killed from another angle""",
+			"""Player switches sides (not autobalanced)""",
+
+			"""The Bizon""",
+			"""Loose taser on the ground""",
+			"""Custom music kit for MVP""",
+			"""SMG vs rifle duel at long range""",
+			"""Terrorist dies to planted C4""",
+		],
+	},
 	"ladydreamtv": {
 		"displayname": "Dream Team",
 		"freebie": """Long hair in a drawing""",

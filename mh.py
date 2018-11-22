@@ -172,6 +172,7 @@ def bingo(channel):
 	# Note that having more than 25 cards (24 before the freebie) is fine.
 	# It means that not all cells will be shown to all players.
 	return render_template("bingo.html",
+		chanlink=channel.split("-")[0], # Normally the same as channel, but "rosuav-foo" becomes "rosuav"
 		channel=channel, displayname=data["displayname"],
 		cards=cards, user=json.dumps(user)
 	)
