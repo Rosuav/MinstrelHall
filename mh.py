@@ -143,7 +143,8 @@ def committee_info(hash):
 	return render_template("committee.html", passwd=passwd, hash=hash)
 
 # TODO: Have a /bingo route that gives a nice list of available channels
-
+# TODO: Give people an easy way to grab their current list of marked cells (for
+# page reloads/server restarts). Just needs to store an array of IDs in JSON.
 bingo_status = collections.defaultdict(lambda: {None: {"all_sockets": set(), "scores": [[], [], [], [], []]}}, {None: 0})
 @app.route("/bingo/<channel>")
 @log_to_tmp
