@@ -57,10 +57,10 @@ BINGO = {
 			"""3 new terminals opened\n\n![rosuavNerd](https://static-cdn.jtvnw.net/emoticons/v1/390025/1.0)""",
 			'''"Let's see if this works..." *BEWM*\n\n![fxnSnipe](https://static-cdn.jtvnw.net/emoticons/v1/925941/1.0)''',
 			'''"I'll fix that later..."\n\n![devicatZZZ](https://static-cdn.jtvnw.net/emoticons/v1/1291578/1.0)''',
-			"""Singing along with music\n\n![rosuavMuted](https://static-cdn.jtvnw.net/emoticons/v1/390027/1.0)""",
+			"""Singing along with music\n\n![acsHiFi](https://static-cdn.jtvnw.net/emoticons/v1/171227/1.0)""",
 			"""Code refactor actually works\n\n![kaypikeCONG](https://static-cdn.jtvnw.net/emoticons/v1/579388/1.0)
 				![kaypikeRATS](https://static-cdn.jtvnw.net/emoticons/v1/579386/1.0)""",
-			"""A bad pun is cracked""",
+			"""A bad pun is cracked![rosuavMuted](https://static-cdn.jtvnw.net/emoticons/v1/390027/1.0)""",
 			"""A reference is made to Alice, Disney or G&S""",
 		],
 	},
