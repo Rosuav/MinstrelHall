@@ -132,6 +132,40 @@ BINGO = {
 			"""Someone makes a bad pun""",
 		],
 	},
+	"cookingfornoobs": {
+		"displayname": "CookingForNoobs",
+		"freebie": """Christine is late""",
+		"cards": [
+			"""Meowki sighting""",
+			"""Disneyland""",
+			"""An insane donation""",
+			"""Donations/subs prevent all cooking""",
+			"""Christine thinks she'll finish on time""",
+
+			"""Nails. Those nails.""",
+			"""Ryan's stream gets mentioned""",
+			"""Christine has lunch on stream""",
+			"""Barre class vs bar class confusion""",
+			"""Microphone batteries fail""",
+
+			"""Awkward lipsync""",
+			"""'Wealthiest streamer'""",
+			"""Donation leaves uneven total""",
+			"""Recipe holder holds recipe""",
+
+			"""Food is 'soooo good'""",
+			"""Ten by ten explosion!""",
+			"""Family member in chat or on camera""",
+			"""Ryan appears on stream""",
+			"""A delivery arrives""",
+
+			"""Pandora stops playing music""",
+			"""Someone gets turned into a sandwich""",
+			"""24+ month resub""",
+			"""Headphones Warning""",
+			"""British vs American spelling""",
+		],
+	},
 }
 
 BINGO_INDICES = []
