@@ -29,7 +29,9 @@ BINGO = {
 			"""The cup gets splooshed\n\n![devicatPOW](https://static-cdn.jtvnw.net/emoticons/v1/1293020/1.0)""",
 			"""Devi double-checks the dashboard\n\n![deviCoolStory](https://cdn.betterttv.net/frankerfacez_emote/251430/1)""",
 			"""Someone creates fanart of Devi or a character\n\n![devicatTYVM](https://static-cdn.jtvnw.net/emoticons/v1/1291601/1.0)""",
-			"""Devi brings a hot drink back from break\n\n![devicatCUP](https://static-cdn.jtvnw.net/emoticons/v1/1291602/1.0)""",
+			"""Devi brings a hot drink back from break\n\n![maayaCozy](https://static-cdn.jtvnw.net/emoticons/v1/1533528/1.0)""",
+			"""Devi has a dessert snack on break\n\n![DeviYay](https://cdn.betterttv.net/frankerfacez_emote/70997/1)""",
+			"""The cup is clinked with 50 bits\n\n![devicatCUP](https://static-cdn.jtvnw.net/emoticons/v1/1857253/1.0)""",
 		],
 	},
 	"rosuav": {
