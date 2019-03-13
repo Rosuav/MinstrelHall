@@ -7,3 +7,7 @@ ExecStart=/usr/local/bin/gunicorn -k flask_sockets.worker mh:app --bind=127.0.0.
 WorkingDirectory=/home/rosuav/MinstrelHall
 # If faster shutdown is needed, switch to killing with SIGINT, as SIGTERM will wait for clients.
 # KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+
