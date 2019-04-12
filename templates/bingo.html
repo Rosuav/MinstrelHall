@@ -75,6 +75,7 @@ socket.onmessage = (ev) => {
 				}
 				if (lines.length >= 10 && seen[user]) break;
 			}
+			if (!lines.length) lines.push("-- add your name above to put yourself on the board --");
 			document.getElementById("leaderboard").innerHTML = "<ul><li>" + lines.join("</li><li>") + "</li></ul>";
 			break;
 		}
