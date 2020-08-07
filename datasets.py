@@ -38,7 +38,7 @@ BINGO = {
 		"displayname": "Rosuav",
 		"freebie": '''"Welcome back to the insanity!"\n\n![maayaCreep](https://static-cdn.jtvnw.net/emoticons/v1/1568882/1.0)''',
 		"cards": [
-			"""Making a TODO""",
+			"""Making a TODO\n\n![devicatSave](https://static-cdn.jtvnw.net/emoticons/v1/302609262/1.0)""",
 			"""Shoutout for someone not in chat\n\n![devicatSALUT](https://static-cdn.jtvnw.net/emoticons/v1/1112113/1.0)""",
 			"""Issues from bleeding-edge Pike or Python\n\n![noobsKnife](https://static-cdn.jtvnw.net/emoticons/v1/302335303/1.0 "noobsKnife")
 				![rosuavBlade](https://static-cdn.jtvnw.net/emoticons/v1/300526834/1.0 "rosuavBlade")""",
@@ -58,7 +58,7 @@ BINGO = {
 			"""A search leads to a StackExchange question\n\n![stephe21LOOT](https://static-cdn.jtvnw.net/emoticons/v1/1494474/1.0)""",
 			"""A can of energy drink is opened\n\n![DrinkPurple](https://static-cdn.jtvnw.net/emoticons/v1/110785/1.0)""",
 			"""3 new terminals opened\n\n![rosuavNerd](https://static-cdn.jtvnw.net/emoticons/v1/390025/1.0)""",
-			'''"Let's see if this works..." *BEWM*\n\n![fxnSnipe](https://static-cdn.jtvnw.net/emoticons/v1/925941/1.0)''',
+			'''"Let's see if this works..." *BEWM*\n\n![stephe21BOOM](https://static-cdn.jtvnw.net/emoticons/v1/301123207/1.0)''',
 			'''"I'll fix that later..."\n\n![devicatZZZ](https://static-cdn.jtvnw.net/emoticons/v1/1291578/1.0)''',
 			"""Singing along with music\n\n![acsHiFi](https://static-cdn.jtvnw.net/emoticons/v1/171227/1.0)""",
 			"""Code refactor actually works\n\n![fxnGG](https://static-cdn.jtvnw.net/emoticons/v1/1515667/1.0)""",
