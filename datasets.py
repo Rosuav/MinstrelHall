@@ -40,7 +40,8 @@ BINGO = {
 		"cards": [
 			"""Making a TODO""",
 			"""Shoutout for someone not in chat\n\n![devicatSALUT](https://static-cdn.jtvnw.net/emoticons/v1/1112113/1.0)""",
-			"""Alice music in the background\n\n![rosuavAlice](https://cdn.discordapp.com/emojis/432447339739873282.png)""",
+			"""Issues from bleeding-edge Pike or Python\n\n![noobsKnife](https://static-cdn.jtvnw.net/emoticons/v1/302335303/1.0 "noobsKnife")
+				![rosuavBlade](https://static-cdn.jtvnw.net/emoticons/v1/300526834/1.0 "rosuavBlade")""",
 			"""A sibling in Mumble\n\n![stephe21Heart](https://static-cdn.jtvnw.net/emoticons/v1/1494449/1.0)
 				![maayaSpoiled](https://static-cdn.jtvnw.net/emoticons/v1/1055344/1.0)""",
 			"""!addquote\n\n![rosuavLove](https://static-cdn.jtvnw.net/emoticons/v1/390023/1.0)""",
@@ -53,7 +54,7 @@ BINGO = {
 			"""Kappamon commands\n\n![MrDestructoid](https://static-cdn.jtvnw.net/emoticons/v1/28/1.0)""",
 			"""CPU or GPU is pegged at 100%\n\n![sushi100](https://static-cdn.jtvnw.net/emoticons/v1/1475567/1.0)""",
 			"""5 typos in 5 seconds\n\n![kaypikeGJ](https://static-cdn.jtvnw.net/emoticons/v1/906028/1.0)""",
-			'''"Commit often"\n\n![nkoFine](https://static-cdn.jtvnw.net/emoticons/v1/1429207/1.0)''',
+			'''"Commit often"\n\n![maayaFine](https://static-cdn.jtvnw.net/emoticons/v1/emotesv2_fddda67d1cd94b5b8593b8b0889a9cd6/1.0)''',
 			"""A search leads to a StackExchange question\n\n![stephe21LOOT](https://static-cdn.jtvnw.net/emoticons/v1/1494474/1.0)""",
 			"""A can of energy drink is opened\n\n![DrinkPurple](https://static-cdn.jtvnw.net/emoticons/v1/110785/1.0)""",
 			"""3 new terminals opened\n\n![rosuavNerd](https://static-cdn.jtvnw.net/emoticons/v1/390025/1.0)""",
@@ -62,7 +63,7 @@ BINGO = {
 			"""Singing along with music\n\n![acsHiFi](https://static-cdn.jtvnw.net/emoticons/v1/171227/1.0)""",
 			"""Code refactor actually works\n\n![fxnGG](https://static-cdn.jtvnw.net/emoticons/v1/1515667/1.0)""",
 			"""A bad pun is cracked\n\n![rosuavMuted](https://static-cdn.jtvnw.net/emoticons/v1/390027/1.0)""",
-			"""A reference is made to Alice, Disney or G&S""",
+			"""A reference is made to Alice, Disney or G&S\n\n![rosuavAlice](https://static-cdn.jtvnw.net/emoticons/v1/300031353/1.0 "rosuavAlice")""",
 		],
 	},
 	"rosuav-csgo": {
