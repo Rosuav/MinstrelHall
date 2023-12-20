@@ -1,5 +1,6 @@
 from __future__ import print_function
-from flask import Flask, render_template, g, Markup, request, redirect
+from flask import Flask, render_template, g, request, redirect
+from markupsafe import Markup
 from flask_sockets import Sockets
 import mistune as md
 import psycopg2
