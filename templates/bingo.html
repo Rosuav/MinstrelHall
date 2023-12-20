@@ -2,6 +2,7 @@
 <html lang=en>
 <head>
 <title>{{displayname}} Bingo</title>
+<link rel="stylesheet" href="https://sikorsky.rosuav.com/static/stillebot.css">
 <style>
 /* Want a clean view? Add CSS overrides from cleanview.css */
 table, th, td {border: 1px solid black;}
@@ -20,10 +21,11 @@ img {width: 28px; height: 28px;}
 </style>
 </head>
 <body>
+<main>
 <section>
 <h1>{{displayname}} Bingo</h1>
 <p>
-Spot things as they happen during a <a href="https://twitch.tv/{{chanlink}}">{{displayname}} live stream</a> and see if you can claim
+Spot things as they happen during any <a href="https://twitch.tv/{{chanlink}}">{{displayname}} live stream</a> and see if you can claim
 an entire row or column in a single stream!
 </p>
 {% if user == "null" %}
@@ -34,7 +36,7 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 {% endif %}
 </section>
 <aside id=leaderboard></aside>
-<main>
+<section>
 <table>
 {% for row in range(5) %}<tr>{% for cell in range(5) %}{% set c = cards[row*5+cell] %}
 {% if c[0] %}
@@ -44,6 +46,7 @@ Want to be on the leaderboard? <label>Enter your name here: <input name=user></l
 {% endif %}
 {% endfor %}</tr>{% endfor %}
 </table>
+</section>
 </main>
 <footer>Just for fun. Created by Chris Angelico aka <a href="https://github.com/Rosuav">Rosuav</a>.</footer>
 <script>
